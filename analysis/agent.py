@@ -85,7 +85,7 @@ class Agent:
             print("Current t:", self.t)
             print("Current action:", action)
             timestamp_of_action_to_execute = self.t - self.action_time_lag
-            # print "timestamp_of_action_to_execute:", timestamp_of_action_to_execute
+            print("timestamp_of_action_to_execute:", timestamp_of_action_to_execute)
             if timestamp_of_action_to_execute < 0:
                 print("storing up actions....")
                 action_to_execute = np.array([0.0,0.0])
@@ -168,7 +168,7 @@ class Agent:
         # where <other_agent_i_info> = [pos in this agent's ego parallel coord, pos in this agent's ego orthog coord]
         #
 
-        obs = np.zeros((Config.FULL_LABELED_STATE_LENGTH))
+        obs = np.zeros((Config.FULL_LABELED_STATE_LENGTH)) # shape: (76,)
 
         # Own agent state (ID is removed before inputting to NN, num other agents is used to rearrange other agents into sequence by NN)
         obs[0] = self.id 
@@ -186,10 +186,10 @@ class Agent:
             dist_between_agent_centers = np.linalg.norm(rel_pos_to_other_global_frame)
             dist_2_other = dist_between_agent_centers - self.radius - other_agent.radius
             if dist_between_agent_centers > Config.SENSING_HORIZON:
-                # print "Agent too far away"
+                print("Agent too far away")
                 continue
             other_agent_dists[i] = dist_2_other
-        # print "other_agent_dists:", other_agent_dists
+        print("other_agent_dists:", other_agent_dists)
         sorted_pairs = sorted(other_agent_dists.items(), key=operator.itemgetter(1))
         sorted_inds = [ind for (ind,pair) in sorted_pairs]
         sorted_inds.reverse()
@@ -197,9 +197,9 @@ class Agent:
         clipped_sorted_agents = [agents[i] for i in clipped_sorted_inds]
 
         self.num_nearby_agents = len(clipped_sorted_inds)
-        # print "sorted_inds:", sorted_inds
-        # print "clipped_sorted_inds:", clipped_sorted_inds
-        # print "clipped_sorted_agents:", clipped_sorted_agents
+        print("sorted_inds:", sorted_inds)
+        print("clipped_sorted_inds:", clipped_sorted_inds)
+        print("clipped_sorted_agents:", clipped_sorted_agents)
 
         i = 0
         for other_agent in clipped_sorted_agents:

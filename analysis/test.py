@@ -17,6 +17,7 @@ def get_action(host_agent, other_agents, nn):
     obs = host_agent.observe(other_agents)[1:]
     obs = np.expand_dims(obs, axis=0)
     # Query the policy based on observation vector
+    # in `observe`, if there is no agent in search range, then host agent will behave irrationally
 ##    predictions = nn.predict_p(obs, None)
 ##    print("predictions", predictions)
 ##    predictions = predictions[0]
@@ -103,6 +104,7 @@ for i in other_agents:
 print("\n\n")
 for i in range(20): # 20 rounds, not work
     host_agent_action = get_action(host_agent, other_agents, nn)
+    print("\n")
     host_agent.update_state(host_agent_action, dt)
     plt.scatter(host_agent.pos_global_frame[0], host_agent.pos_global_frame[1], s=1000*host_agent.radius, c=whiten(colors[0], 0.05*(i+1)))
 plt.show()

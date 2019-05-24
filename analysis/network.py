@@ -138,12 +138,14 @@ class NetworkVP_rnn(NetworkVPCore):
             # possible source of 256: https://github.com/NVlabs/GA3C/blob/master/ga3c/NetworkVP.py
             # corresponding paper:    https://arxiv.org/pdf/1611.06256.pdf
             # reference:              https://arxiv.org/pdf/1602.01783.pdf
+            # the weight of cell is a list of 2 arrays: kernel (68, 256) and bias (256,)
             # the first FC layer, shape: (?, 256)
 ##            global w
 ##            w = cell.get_weights()
 
         self.layer2 = tf.layers.dense(inputs=self.layer1, units=256, activation=tf.nn.relu, name = "layer2")
         # the second FC layer, shape: (?, 256)
+        # the weight of cell is a list of 2 arrays: kernel (256, 256) and bias (256,)
         self.final_flat = tf.contrib.layers.flatten(self.layer2)
         # shape: (?, 256)
         
@@ -156,11 +158,11 @@ class Config:
     # GENERAL PARAMETERS
     NORMALIZE_INPUT     = True
     USE_DROPOUT         = False # not used
-    USE_REGULARIZATION  = True
+    USE_REGULARIZATION  = True  # no effect
     ROBOT_MODE          = True
     EVALUATE_MODE       = True  # equal to PLAY_MODE in class `Agent`, `related to time_remaining_to_reach_goal`
 
-    SENSING_HORIZON     = 8.0
+    SENSING_HORIZON     = 8.0   # the visible distance of an agent
 
     MIN_POLICY = 1e-4
 
