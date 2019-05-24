@@ -28,7 +28,8 @@ def get_action(host_agent, other_agents, nn):
 possible_actions = network.Actions()
 num_actions = possible_actions.num_actions # 11
 nn = network.NetworkVP_rnn(network.Config.DEVICE, "network", num_actions)
-nn.simple_load("./network_01900000")
+##nn.simple_load("./network_01900000")
+nn.simple_load("network_01653000")
 
 dt = 1 # 1s
 ##colors = ["red", "green", "orange", "blue"]
@@ -79,7 +80,7 @@ for i in range(num_other_agents):
     goal_x = x + 5.0
     goal_y = y + 5.0
 
-    plt.scatter(goal_x, goal_y, s=1000*radius, facecolors="none", edgecolors=colors[i+1]) # goal of other agents
+##    plt.scatter(goal_x, goal_y, s=1000*radius, facecolors="none", edgecolors=colors[i+1]) # goal of other agents
     
     other_agents.append(agent.Agent(x, y, goal_x, goal_y, radius, pref_speed, heading_angle, i+1))
 
@@ -104,7 +105,8 @@ count = 0
 while not all_agents[0].is_at_goal:
     host_agent_action = get_action(all_agents[0], all_agents[1:], nn)
     all_agents[0].update_state(host_agent_action, dt)
-    plt.scatter(all_agents[0].pos_global_frame[0], all_agents[0].pos_global_frame[1], s=1000*all_agents[0].radius, c="red")
+##    plt.scatter(all_agents[0].pos_global_frame[0], all_agents[0].pos_global_frame[1], s=1000*all_agents[0].radius, c="red")
+    plt.scatter(all_agents[0].pos_global_frame[0], all_agents[0].pos_global_frame[1], s=1000*all_agents[0].radius, c=whiten(colors[0], 0.01*count))
     count += 1
 plt.title("After {} movements, the host agent arrives its goal position".format(count))
 plt.show()

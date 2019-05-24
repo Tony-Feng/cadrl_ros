@@ -57,6 +57,8 @@ class Agent:
 
         self.min_dist_to_other_agents = np.inf
 
+        self.too_far_away = False
+
 
     def _check_if_at_goal(self):
         near_goal_threshold = 0.2
@@ -80,20 +82,20 @@ class Agent:
         if self.action_time_lag > 0:
             # Store current action in dictionary, then look up the past action that should be executed this step
             self.chosen_action_dict[self.t] = action
-            print("-------------")
-            print("Agent id: %i" %self.id)
-            print("Current t:", self.t)
-            print("Current action:", action)
+##            print("-------------")
+##            print("Agent id: %i" %self.id)
+##            print("Current t:", self.t)
+##            print("Current action:", action)
             timestamp_of_action_to_execute = self.t - self.action_time_lag
-            print("timestamp_of_action_to_execute:", timestamp_of_action_to_execute)
+##            print("timestamp_of_action_to_execute:", timestamp_of_action_to_execute)
             if timestamp_of_action_to_execute < 0:
-                print("storing up actions....")
+##                print("storing up actions....")
                 action_to_execute = np.array([0.0,0.0])
             else:
                 nearest_timestamp, _ = util.find_nearest(np.array(self.chosen_action_dict.keys()),timestamp_of_action_to_execute)
-                print("nearest_timestamp:", nearest_timestamp)
+##                print("nearest_timestamp:", nearest_timestamp)
                 action_to_execute = self.chosen_action_dict[nearest_timestamp[0]]
-            print("action_to_execute:", action_to_execute)
+##            print("action_to_execute:", action_to_execute)
         else:
             action_to_execute = action
 
@@ -186,10 +188,11 @@ class Agent:
             dist_between_agent_centers = np.linalg.norm(rel_pos_to_other_global_frame)
             dist_2_other = dist_between_agent_centers - self.radius - other_agent.radius
             if dist_between_agent_centers > Config.SENSING_HORIZON:
-                print("Agent too far away")
+##                print("Agent too far away")
+                self.too_far_away = True
                 continue
             other_agent_dists[i] = dist_2_other
-        print("other_agent_dists:", other_agent_dists)
+##        print("other_agent_dists:", other_agent_dists)
         sorted_pairs = sorted(other_agent_dists.items(), key=operator.itemgetter(1))
         sorted_inds = [ind for (ind,pair) in sorted_pairs]
         sorted_inds.reverse()
@@ -197,9 +200,9 @@ class Agent:
         clipped_sorted_agents = [agents[i] for i in clipped_sorted_inds]
 
         self.num_nearby_agents = len(clipped_sorted_inds)
-        print("sorted_inds:", sorted_inds)
-        print("clipped_sorted_inds:", clipped_sorted_inds)
-        print("clipped_sorted_agents:", clipped_sorted_agents)
+##        print("sorted_inds:", sorted_inds)
+##        print("clipped_sorted_inds:", clipped_sorted_inds)
+##        print("clipped_sorted_agents:", clipped_sorted_agents)
 
         i = 0
         for other_agent in clipped_sorted_agents:

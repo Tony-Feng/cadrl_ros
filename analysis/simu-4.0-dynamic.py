@@ -28,7 +28,9 @@ def get_action(host_agent, other_agents, nn):
 possible_actions = network.Actions()
 num_actions = possible_actions.num_actions # 11
 nn = network.NetworkVP_rnn(network.Config.DEVICE, "network", num_actions)
-nn.simple_load("./network_01900000")
+##nn.simple_load("./network_01900000")
+##nn.simple_load("network_02360000")
+nn.simple_load("network_01653000")
 
 dt = 1 # 1s
 ##colors = ["red", "green", "orange", "blue"]
@@ -104,6 +106,8 @@ count = 1
 while not all_agents[0].is_at_goal:
     for j in range(4):
         ha = all_agents[j]
+        if ha.too_far_away:
+            break
         oa = list(range(4))
         oa.remove(j)
         oa = [all_agents[k] for k in oa]

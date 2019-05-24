@@ -1,5 +1,3 @@
-import os
-import re
 import numpy as np
 import tensorflow as tf
 import time
@@ -77,8 +75,14 @@ class NetworkVPCore:
         # each number in result + 0.0001 and / 1.0011, then use `argmax` to decide next action
         # shape: (?, 11)
 
+##        # logits_v
+##        self.logits_v = tf.layers.dense(inputs = self.fc1, units = 1, name = "logits_v", activation = None)
+##        # input: 256; output: 1
+##        # shape: (?, 1), kernel: shape: (256, 1), bias: shape: (1,)
+
     def predict_p(self, x, audio):
         return self.sess.run(self.softmax_p, feed_dict={self.x: x})
+##        return self.sess.run(self.logits_v, feed_dict={self.x: x}) # logits_v
 
     def simple_load(self, filename=None):
         if filename is None:
@@ -237,7 +241,9 @@ if __name__ == "__main__": # query speed test
     num_actions = Actions().num_actions # 11
     nn = NetworkVP_rnn(Config.DEVICE, "network", num_actions)
 ##    nn.simple_load()
-    nn.simple_load("./network_01900000")
+##    nn.simple_load("network_01900000")
+##    nn.simple_load("network_02360000")
+    nn.simple_load("network_01653000")
 
     obs = np.zeros((Config.FULL_STATE_LENGTH)) # 75 0's, shape: (75,)
     obs = np.expand_dims(obs, axis=0)          # 75 0's, shape: (1, 75)

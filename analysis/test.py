@@ -32,6 +32,8 @@ possible_actions = network.Actions()
 num_actions = possible_actions.num_actions # 11
 nn = network.NetworkVP_rnn(network.Config.DEVICE, "network", num_actions)
 nn.simple_load("./network_01900000")
+##nn.simple_load("network_02360000")
+##nn.simple_load("network_01653000")
 
 dt = 1 # 1s
 ##colors = ["red", "green", "yellow", "blue"]
@@ -99,10 +101,12 @@ for i in other_agents:
 ##print("action:", action)
 ####plt.show()
 
-##host_agent_action = get_action(host_agent, other_agents, nn)
-##host_agent.update_state(host_agent_action, dt)
+host_agent_action = get_action(host_agent, other_agents, nn)
+host_agent.update_state(host_agent_action, dt)
 print("\n\n")
 for i in range(20): # 20 rounds, not work
+    if host_agent.too_far_away:
+        break
     host_agent_action = get_action(host_agent, other_agents, nn)
     print("\n")
     host_agent.update_state(host_agent_action, dt)
@@ -116,3 +120,9 @@ plt.show()
 ##    plt.scatter(host_agent.pos_global_frame[0], host_agent.pos_global_frame[1], s=1000*radius, c=whiten(colors[0], 0.01*i))
 ##    i += 1
 ##plt.show()
+
+
+### test logits_v
+##obs = host_agent.observe(other_agents)[1:] # remove id, shape: (76,) -> (75,)
+##obs = np.expand_dims(obs, axis=0) # shape: (1, 75)
+##predictions = nn.predict_p(obs, None) # shape: (1, 1)
