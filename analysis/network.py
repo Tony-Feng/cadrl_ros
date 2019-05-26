@@ -80,9 +80,17 @@ class NetworkVPCore:
 ##        # input: 256; output: 1
 ##        # shape: (?, 1), kernel: shape: (256, 1), bias: shape: (1,)
 
+        # Cost: v
+        # https://github.com/mfe7/cadrl_ros/issues/3
+        self.logits_v = tf.squeeze(tf.layers.dense(inputs=self.fc1, units = 1, use_bias = True, activation=None, name = 'logits_v'), axis=[1])
+
     def predict_p(self, x, audio):
         return self.sess.run(self.softmax_p, feed_dict={self.x: x})
 ##        return self.sess.run(self.logits_v, feed_dict={self.x: x}) # logits_v
+
+    def predict_p_and_v(self, x):
+        # https://github.com/NVlabs/GA3C/blob/master/ga3c/NetworkVP.py
+        return self.sess.run([self.softmax_p, self.logits_v], feed_dict={self.x: x})
 
     def simple_load(self, filename=None):
         if filename is None:
@@ -241,9 +249,9 @@ if __name__ == "__main__": # query speed test
     num_actions = Actions().num_actions # 11
     nn = NetworkVP_rnn(Config.DEVICE, "network", num_actions)
 ##    nn.simple_load()
-##    nn.simple_load("network_01900000")
+    nn.simple_load("network_01900000")
 ##    nn.simple_load("network_02360000")
-    nn.simple_load("network_01653000")
+##    nn.simple_load("network_01653000")
 
     obs = np.zeros((Config.FULL_STATE_LENGTH)) # 75 0's, shape: (75,)
     obs = np.expand_dims(obs, axis=0)          # 75 0's, shape: (1, 75)
@@ -257,6 +265,7 @@ if __name__ == "__main__": # query speed test
         obs[0,3] = np.random.uniform(0.2, 2.0) # pref speed
         obs[0,4] = np.random.uniform(0.2, 1.5) # radius
         predictions = nn.predict_p(obs, None)[0]
+##        predictions = nn.predict_p_and_v(obs)[0]
     t_end = time.time()
     print("avg query time:", (t_end - t_start)/num_queries)
     print("total time:", t_end - t_start)
